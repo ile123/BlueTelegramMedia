@@ -1,0 +1,76 @@
+﻿@page "/EditUser/{UserId}"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@using Domain.Entities
+@using Backend.Services
+
+@inject UserService _userService;
+@inject NavigationManager _navigationManager;
+
+<h3>Edit User</h3>
+
+@if(user == null)
+{
+    <div>Loading........</div>
+}
+else
+{
+<EditForm Model="@user" OnValidSubmit="@UpdateUserAsync">
+<div class="userFields">
+
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <InputText id="firstName" class="form-control" @bind-Value="@user.Firstname"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <InputText id="lastName" class="form-control" @bind-Value="@user.Lastname"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="@user.Username"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Role</label>
+        <InputSelect @bind-Value="user.Role" class="form-select">
+            <option value="">Select Role ...</option>
+            <option value="Admin">Admin</option>
+            <option value="Employee">Employee</option>
+        </InputSelect>
+    </div>
+
+</div>
+     <button type="submit">
+            <span class="bi bi-prescription"></span>
+                Update User
+     </button>
+     <button type="button" @onclick="Close">
+            <span class="oi oi-media-skip-backward"></span>
+                Close
+     </button>
+</EditForm>
+}
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+
+    public User user { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await _userService.GetUserAsync(int.Parse(UserId));
+    }
+    private async Task UpdateUserAsync()
+    {
+        await _userService.UpdateUserAsync(user);
+        Close();
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/users");
+    }
+}

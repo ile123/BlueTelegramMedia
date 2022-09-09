@@ -1,0 +1,81 @@
+﻿@page "/"
+
+@using Backend.Authentication
+
+@inject NavigationManager _navigationManager;
+@inject AuthenticationStateProvider authStateProvider;
+@inject IJSRuntime js;
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <h3>BTM</h3>
+    &nbsp;&nbsp;&nbsp;
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" disabled>Main Page</button>
+            &nbsp;&nbsp;&nbsp;
+        </li>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary" @onclick="openUsers">Users</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin,Employee">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success" @onclick="openMovies">Movies</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView>
+            <Authorized>
+                <button @onclick="Logout" href="javascript:void(0)">Logout</button>
+            </Authorized>
+            <NotAuthorized>
+                <button @onclick="openLogin" class="btn btn-success">Login</button>
+            </NotAuthorized>
+        </AuthorizeView>
+      </ul>
+    </div>
+  </div>
+</nav>
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    private async Task DisplayGreetingAlert()
+    {
+        var authState = await authenticationState;
+        var message = $"Hello {authState.User.Identity.Name}";
+        await js.InvokeVoidAsync("alert", message);
+    }
+
+    private async Task Logout()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        _navigationManager.NavigateTo("/", true);
+    }
+
+    private void openUsers()
+    {
+        _navigationManager.NavigateTo("/users");
+    }
+
+    private void openMovies()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+
+    private void openLogin()
+    {
+        _navigationManager.NavigateTo("/login");
+    }
+}

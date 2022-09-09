@@ -1,0 +1,80 @@
+﻿@page "/AddUser"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@using Domain.Entities;
+@using Backend.Services;
+@using Backend.Authentication;
+
+@inject UserService _userService;
+@inject NavigationManager _navigationManager;
+
+<h3>Add User</h3>
+<EditForm Model="@user" OnValidSubmit="@AddUserAsync">
+<div class="userFields">
+
+    <div class="mb-3">
+        <label for="firstName" class="form-label">First Name</label>
+        <InputText id="firstName" class="form-control" @bind-Value="@user.Firstname"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="lastName" class="form-label">Last Name</label>
+        <InputText id="lastName" class="form-control" @bind-Value="@user.Lastname"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="@user.Username"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="@user.Email"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="passowrd" class="form-control" @bind-Value="@user.Password"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Role</label>
+        <InputSelect @bind-Value="user.Role" class="form-select">
+            <option value="">Select Role ...</option>
+            <option value="Admin">Admin</option>
+            <option value="Employee">Employee</option>
+        </InputSelect>
+    </div>
+
+</div>
+<button type="submit" class="btn btn-primary">
+        <span class="oi-pencil"></span>
+            Add User
+    </button>
+    <button type="button" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+            Close
+    </button>
+</EditForm>
+@code {
+    public User user { get; set; }
+    private Encryption encryption { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        encryption = new Encryption();
+        user = new User();
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/users");
+    }
+
+    private async Task AddUserAsync()
+    {
+        string temp = encryption.EncodePasswordToBase64(user.Password);
+        user.Password = temp;
+        await _userService.AddUserAsync(user);
+        Close();
+    }
+}

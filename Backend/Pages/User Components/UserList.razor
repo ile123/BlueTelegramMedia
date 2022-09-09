@@ -1,0 +1,192 @@
+﻿@page "/users"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@using Domain.Entities;
+@using Backend.Services;
+@using Radzen.Blazor;
+
+@inject UserService _userService;
+@inject NavigationManager _navigationManager;
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <h3>BTM</h3>
+    &nbsp;&nbsp;&nbsp;
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <button type="button" class="btn btn-primary" @onclick="returnToMainPage">Main Page</button>
+            &nbsp;&nbsp;&nbsp;
+        </li>
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" disabled>Users</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+@if(users == null)
+{
+    <div>Loading........</div>
+}
+else
+{
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Filter......" @bind="Filter" @bind:event="oninput">
+    </div>
+    <select @bind="SelectedSort">
+        <option value="Id">Default</option>
+        <option value="Username">Username</option>
+        <option value="Firstname">First Name</option>
+        <option value="Lastname">Last Name</option>
+        <option value="Email">Email</option>
+        <option value="Role">Role</option>
+    </select>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Username</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col" class="text-center">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var user in users)
+            {
+                if (!IsVisible(user))
+                {
+                    continue;
+                }
+                <tr>
+                    <td scope="row">@user.Id</td>
+                    <td scope="row">@user.Username</td>
+                    <td scope="row">@user.Firstname</td>
+                    <td scope="row">@user.Lastname</td>
+                    <td scope="row">@user.Email</td>
+                    <td scope="row">@user.Role</td>
+                    <td> <a href="/EditUser/@user.Id" class="btn btn-primary"> <span class="oi oi-pencil"></span> </a></td>
+                    <td> <a href="/ChangePassword/@user.Id" class="btn btn-primary"> <span class="bi bi-minecart"></span> </a></td>
+                    <td><button type="button" @onclick="() => DeleteUserAsync(user.Id)"> <span class="oi oi-delete"></span> </button> </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<button type="button" @onclick="OpenAddUserPage">
+        <span class="oi oi-plus"></span>
+            Add User
+</button>
+
+@code {
+    private IEnumerable<User> users { get; set; }
+    private string selectedSort { get; set; }
+    public string Filter { get; set; }
+    public string SelectedSort
+    {
+        get{ return selectedSort; }
+        set
+        {
+            selectedSort = value;
+            selecteSortDictionary[selectedSort]();
+
+        }
+
+    }
+    Dictionary<string, Action> selecteSortDictionary;
+    protected override async Task OnInitializedAsync()
+    {
+        users = await _userService.GetUsers();
+        Filter = string.Empty;
+        selecteSortDictionary = new Dictionary<string, Action>
+        {
+             ["Id"] = () => users = users.OrderBy(x => x.Id),
+             ["Username"] = () => users = users.OrderBy(x => x.Username),
+             ["Firstname"] = () => users = users.OrderBy(x => x.Firstname),
+             ["Lastname"] = () => users = users.OrderBy(x => x.Lastname),
+             ["Email"] = () => users = users.OrderBy(x => x.Email),
+             ["Role"] = () => users = users.OrderBy(x => x.Role),
+        };
+    }
+    private void returnToMainPage()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+    private void OpenAddUserPage()
+    {
+        _navigationManager.NavigateTo("/AddUser");
+    }
+    private async Task DeleteUserAsync(int userId)
+    {
+        await _userService.DeleteUserAsync(userId);
+        users = await _userService.GetUsers();
+    }
+    public bool IsVisible(User user)
+    {
+        if (string.IsNullOrEmpty(user.Username))
+        {
+            return true;
+        }
+        if (user.Username.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (user.Username.StartsWith(Filter))
+        {
+            return true;
+        }
+        if (string.IsNullOrEmpty(user.Firstname))
+        {
+            return true;
+        }
+        if (user.Firstname.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (user.Firstname.StartsWith(Filter))
+        {
+            return true;
+        }
+        if (string.IsNullOrEmpty(user.Lastname))
+        {
+            return true;
+        }
+        if (user.Lastname.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (user.Lastname.StartsWith(Filter))
+        {
+            return true;
+        }
+        if (string.IsNullOrEmpty(user.Email))
+        {
+            return true;
+        }
+        if (user.Email.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (user.Email.StartsWith(Filter))
+        {
+            return true;
+        }
+        if (string.IsNullOrEmpty(user.Role))
+        {
+            return true;
+        }
+        if (user.Role.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (user.Role.StartsWith(Filter))
+        {
+            return true;
+        }
+        return false;
+    }
+}
