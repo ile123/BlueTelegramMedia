@@ -112,7 +112,7 @@ using Backend.Authentication;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 49 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\Index.razor"
+#line 55 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\Index.razor"
       
     [CascadingParameter]
     private Task<AuthenticationState> authenticationState { get; set; }
@@ -144,6 +144,10 @@ using Backend.Authentication;
     private void openLogin()
     {
         _navigationManager.NavigateTo("/login");
+    }
+    private void openReviewers()
+    {
+        _navigationManager.NavigateTo("/reviewers");
     }
 
 #line default

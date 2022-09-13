@@ -1,0 +1,73 @@
+﻿@page "/MovieReview/{MovieId}"
+
+@using Frontend.Services;
+@using Domain.Entities;
+
+@inject MovieService _movieService;
+@inject ReviewerService _reviwerService;
+@inject ReviewService _reviweService;
+@inject NavigationManager _navigationManager;
+@inject IJSRuntime js;
+
+<h3>Movie Review</h3>
+
+@if (movie == null && reviewer == null)
+{
+    <div>Loading..........</div>
+}
+else
+{
+    <EditForm Model="@review" OnValidSubmit="AddReviewAsync">
+        <div class="reviewFields">
+            <div class="mb-3">
+                <label for="name" class="form-label">Rating</label>
+                <h6>Leave a rating between 1-10</h6>
+                <InputNumber id="name" class="form-control" min="1" max="10" @bind-Value="@review.Rating"></InputNumber>
+            </div>
+            <div class="mb-3">
+                <label for="filmreview" class="form-label">Review</label>
+                <InputText id="filmreview" class="form-control" @bind-Value="@review.FilmReview"></InputText>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <span class="oi-pencil"></span>
+                Submit
+        </button>
+        <button type="button" @onclick="Close">
+            <span class="oi oi-media-skip-backward"></span>
+                Close
+        </button>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public string MovieId { get; set; }
+
+    public Movie movie { get; set; }
+
+    public Reviewer reviewer { get; set; }
+
+    public Review review { get; set; } = new Review();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        movie = await _movieService.GetMovieAsync(int.Parse(MovieId));
+        reviewer = await _reviwerService.GetReviewerByUsernameAsync(authenticationState.Result.User.Identity.Name);
+    }
+
+    private async Task AddReviewAsync()
+    {
+        review.MovieId = movie.Id;
+        review.ReviewerId = reviewer.Id;
+        await _reviweService.AddReviewAsync(review);
+        Close();
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+}

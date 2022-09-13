@@ -36,6 +36,9 @@ namespace Backend
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddScoped<UserService>();
+            services.AddScoped<MovieService>();
+            services.AddScoped<ReviewerService>();
+            services.AddScoped<ReviewService>();
             services.AddScoped<ProtectedSessionStorage>();
             services.AddScoped<AuthenticationStateProvider,CustomAuthenticationStateProvider>();
             services.AddHttpClient();

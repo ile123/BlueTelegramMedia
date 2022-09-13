@@ -1,0 +1,89 @@
+﻿@page "/movies"
+
+@attribute [Authorize(Roles = "Reviewer")]
+
+@using Domain.Entities;
+@using Frontend.Services;
+@using Radzen.Blazor;
+
+@inject MovieService _movieService;
+@inject NavigationManager _navigationManager;
+@inject IJSRuntime js;
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <img src="images/logo_for_nav_2.png" />
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" @onclick="openMainPage">Main Page</button>
+            &nbsp;&nbsp;&nbsp;
+        </li>
+        <AuthorizeView Roles="Reviewer">
+            <Authorized>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success" disabled>Movies</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" @onclick="openReviews">My Reviews</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+@if(movies == null)
+{
+    <div>Loading........</div>
+}
+else
+{
+    <div class="row">
+    @foreach(var movie in movies)
+    {
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="/images/default_1.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <h3 class="card-title">@movie.Name</h3>
+                    <div>
+                        <h6>Director: @movie.Writers</h6>
+                        <h6>Actor: @movie.Actors</h6>
+                    </div>
+                    <p class="card-text">@movie.Description</p>
+                    <div>
+                        <a href="/MovieReview/@movie.Id" class="btn btn-primary">Review Movie</a>
+                        <a href="/MovieReviewList/@movie.Id" class="btn btn-danger">List Reviews</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    </div>
+}
+@code {
+    public IEnumerable<Movie> movies { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await _movieService.GetMovies();
+    }
+    private void openListReviews()
+    {
+        _navigationManager.NavigateTo("/reviews");
+    }
+    private void openMainPage()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+    private void openReviews()
+    {
+        _navigationManager.NavigateTo("/reviews");
+    }
+}

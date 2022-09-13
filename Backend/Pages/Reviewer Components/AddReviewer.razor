@@ -1,0 +1,63 @@
+﻿@page "/addReviewer"
+
+@attribute [Authorize(Roles = "Admin, Employee")]
+
+@using Domain.Entities;
+@using Backend.Services;
+@using Backend.Authentication;
+
+@inject ReviewerService _reviewerService;
+@inject NavigationManager _navigationManager;
+@inject IJSRuntime js;
+
+<h3>Add Reviewer</h3>
+
+<EditForm Model="@reviewer" OnValidSubmit="AddReviewerAsync">
+<div class="reviewerFields">
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="@reviewer.Username"></InputText>
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" type="email" class="form-control" @bind-Value="@reviewer.Email"></InputText>
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="@reviewer.Password"></InputText>
+    </div>
+</div>
+<button type="submit" class="btn btn-primary">
+        <span class="oi-pencil"></span>
+            Add Reviewer
+    </button>
+    <button type="button" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+            Close
+    </button>
+</EditForm>
+
+@code {
+    public Reviewer reviewer { get; set; } = new Reviewer();
+    public Encryption encryption { get; set; } = new Encryption();
+    private async Task AddReviewerAsync()
+    {
+        var temp1 = _reviewerService.GetReviewerByUsernameAsync(reviewer.Username);
+        if(temp1 is not null)
+        {
+            string temp2 = encryption.EncodePasswordToBase64(reviewer.Password);
+            reviewer.Password = temp2;
+            await _reviewerService.AddReviewerAsync(reviewer);
+            Close();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert","Reviewer already exists!");
+            return;
+        }
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/reviewers");
+    }
+}

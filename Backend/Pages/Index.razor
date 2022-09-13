@@ -10,7 +10,8 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <h3>BTM</h3>
+    <img src="images/logo.png" />
+    &nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -20,10 +21,15 @@
         </li>
         <AuthorizeView Roles="Admin">
             <Authorized>
+                &nbsp;&nbsp;&nbsp;
                 <li class="nav-item">
                     <button type="button" class="btn btn-primary" @onclick="openUsers">Users</button>
                 </li>
                 &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" @onclick="openReviewers">Reviewers</button>
+                </li>
+                 &nbsp;&nbsp;&nbsp;
             </Authorized>
         </AuthorizeView>
         <AuthorizeView Roles="Admin,Employee">
@@ -77,5 +83,9 @@
     private void openLogin()
     {
         _navigationManager.NavigateTo("/login");
+    }
+    private void openReviewers()
+    {
+        _navigationManager.NavigateTo("/reviewers");
     }
 }

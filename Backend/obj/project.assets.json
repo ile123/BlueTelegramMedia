@@ -569,7 +569,7 @@
           "lib/netstandard1.3/Newtonsoft.Json.dll": {}
         }
       },
-      "Radzen.Blazor/3.20.10": {
+      "Radzen.Blazor/3.18.12": {
         "type": "package",
         "dependencies": {
           "LibSassBuilder": "2.0.1",
@@ -2682,10 +2682,10 @@
         "tools/install.ps1"
       ]
     },
-    "Radzen.Blazor/3.20.10": {
-      "sha512": "oVd+01DRVIvRdwCzTdqL10aFW01DeLsbbV/1rR/T9mdL8BmWBi7zne5Mfpgfo3RzZTst5hjSEDbfaxSqlz3Qig==",
+    "Radzen.Blazor/3.18.12": {
+      "sha512": "BhhNGNDvWdxi5rrGeKAFAUAE4+k6lOEpT6c8g2jdI3jLaRAKL6Kwdi2yoAV5Yy0yt7uuT2BJoEoZ5Q/O2ixBpA==",
       "type": "package",
-      "path": "radzen.blazor/3.20.10",
+      "path": "radzen.blazor/3.18.12",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2697,11 +2697,9 @@
         "icon.png",
         "lib/net5.0/Radzen.Blazor.dll",
         "lib/net5.0/Radzen.Blazor.xml",
-        "lib/net6.0/Radzen.Blazor.dll",
-        "lib/net6.0/Radzen.Blazor.xml",
         "lib/netstandard2.1/Radzen.Blazor.dll",
         "lib/netstandard2.1/Radzen.Blazor.xml",
-        "radzen.blazor.3.20.10.nupkg.sha512",
+        "radzen.blazor.3.18.12.nupkg.sha512",
         "radzen.blazor.nuspec",
         "staticwebassets/Radzen.Blazor.js",
         "staticwebassets/css/dark-base.css",
@@ -6402,7 +6400,7 @@
       "Microsoft.EntityFrameworkCore.Design >= 5.0.17",
       "Microsoft.EntityFrameworkCore.SqlServer >= 5.0.17",
       "Microsoft.EntityFrameworkCore.Tools >= 5.0.17",
-      "Radzen.Blazor >= 3.20.10"
+      "Radzen.Blazor >= 3.18.12"
     ]
   },
   "packageFolders": {
@@ -6478,7 +6476,7 @@
           },
           "Radzen.Blazor": {
             "target": "Package",
-            "version": "[3.20.10, )"
+            "version": "[3.18.12, )"
           }
         },
         "imports": [

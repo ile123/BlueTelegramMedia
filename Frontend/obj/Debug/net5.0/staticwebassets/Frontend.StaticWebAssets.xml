@@ -1,0 +1,4 @@
+﻿<StaticWebAssets Version="1.0">
+  <ContentRoot BasePath="/" Path="C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Frontend\obj\Debug\net5.0\scopedcss\bundle\" />
+  <ContentRoot BasePath="_content/Radzen.Blazor" Path="C:\Users\Ilario\.nuget\packages\radzen.blazor\3.20.11\build\..\staticwebassets\" />
+</StaticWebAssets>

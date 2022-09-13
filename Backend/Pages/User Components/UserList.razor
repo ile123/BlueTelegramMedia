@@ -4,24 +4,41 @@
 
 @using Domain.Entities;
 @using Backend.Services;
-@using Radzen.Blazor;
 
 @inject UserService _userService;
 @inject NavigationManager _navigationManager;
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
-    <h3>BTM</h3>
+    <img src="images/logo_for_nav_2.png" />
+    &nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-            <button type="button" class="btn btn-primary" @onclick="returnToMainPage">Main Page</button>
+            <button type="button" class="btn btn-secondary" @onclick="returnToMainPage">Main Page</button>
             &nbsp;&nbsp;&nbsp;
         </li>
-        <li class="nav-item">
-            <button type="button" class="btn btn-secondary" disabled>Users</button>
-        </li>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary" disabled>Users</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" @onclick="openReviewers">Reviewers</button>
+                </li>
+                 &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin,Employee">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success" @onclick="openMovies">Movies</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
       </ul>
     </div>
   </div>
@@ -52,7 +69,9 @@ else
                 <th scope="col">Last Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Role</th>
-                <th scope="col" class="text-center">Options</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Change Password</th>
+                <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -70,7 +89,7 @@ else
                     <td scope="row">@user.Email</td>
                     <td scope="row">@user.Role</td>
                     <td> <a href="/EditUser/@user.Id" class="btn btn-primary"> <span class="oi oi-pencil"></span> </a></td>
-                    <td> <a href="/ChangePassword/@user.Id" class="btn btn-primary"> <span class="bi bi-minecart"></span> </a></td>
+                    <td> <a href="/ChangePasswordUser/@user.Id" class="btn btn-primary"> <span class="bi bi-minecart"></span> </a></td>
                     <td><button type="button" @onclick="() => DeleteUserAsync(user.Id)"> <span class="oi oi-delete"></span> </button> </td>
                 </tr>
             }
@@ -119,6 +138,13 @@ else
     private void OpenAddUserPage()
     {
         _navigationManager.NavigateTo("/AddUser");
+    }
+    private void openMovies(){
+        _navigationManager.NavigateTo("/movies");
+    }
+    private void openReviewers()
+    {
+        _navigationManager.NavigateTo("/reviewers");
     }
     private async Task DeleteUserAsync(int userId)
     {

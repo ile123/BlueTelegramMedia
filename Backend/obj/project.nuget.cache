@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "u6wBBsbo4YwMwA1bweei1VK6iXydJsV545NjNHTkio4EY6YUwAjY0VDtAXIom3OVIcCck3OqAiSglfZdMlMjYQ==",
+  "dgSpecHash": "IoeT7XDfTfKkPIlgkJ/86vqWVhrbIp7UB4zHlECTt6Q+8LBoPF7Kh3+/PDX8fa2kLo5NQLelBP6+/lObfioZRA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Ilario\\source\\repos\\BlueTelegramMedia(.NET 5)\\Backend\\Backend.csproj",
   "expectedPackageFiles": [
@@ -45,7 +45,7 @@
     "C:\\Users\\Ilario\\.nuget\\packages\\microsoft.win32.registry\\4.7.0\\microsoft.win32.registry.4.7.0.nupkg.sha512",
     "C:\\Users\\Ilario\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\Ilario\\.nuget\\packages\\newtonsoft.json\\10.0.1\\newtonsoft.json.10.0.1.nupkg.sha512",
-    "C:\\Users\\Ilario\\.nuget\\packages\\radzen.blazor\\3.20.10\\radzen.blazor.3.20.10.nupkg.sha512",
+    "C:\\Users\\Ilario\\.nuget\\packages\\radzen.blazor\\3.18.12\\radzen.blazor.3.18.12.nupkg.sha512",
     "C:\\Users\\Ilario\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
     "C:\\Users\\Ilario\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
     "C:\\Users\\Ilario\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",

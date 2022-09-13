@@ -1,5 +1,115 @@
-﻿<h3>MovieList</h3>
+﻿@page "/movies"
 
+@using Domain.Entities;
+@using Backend.Services;
+
+@inject MovieService _movieService;
+@inject NavigationManager _navigationManager;
+
+@attribute [Authorize(Roles = "Admin, Employee")]
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <img src="images/logo_for_nav_2.png" />
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" @onclick="returnToMainPage">Main Page</button>
+            &nbsp;&nbsp;&nbsp;
+        </li>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary" @onclick="openUsers">Users</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" @onclick="openReviewers">Reviewers</button>
+                </li>
+                 &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin,Employee">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success" disabled>Movies</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+@if(movies == null)
+{
+    <div>Loading........</div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Writer</th>
+                <th scope="col">Actor</th>
+                <th scope="col">Genre</th>
+                <th scope="col">Picture</th>
+                <th scope="col" class="text-center">Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var movie in movies)
+            {
+                <tr>
+                    <td scope="row">@movie.Id</td>
+                    <td scope="row">@movie.Name</td>
+                    <td scope="row">@movie.Writers</td>
+                    <td scope="row">@movie.Actors</td>
+                    <td scope="row">@movie.Genre</td>
+                    <img src="/images/default_1.jpg" />
+                    <td> <a href="/EditMovie/@movie.Id" class="btn btn-primary"> <span class="oi oi-pencil"></span> </a></td>
+                    <td><button type="button" @onclick="() => DeleteMovieAsync(movie.Id)"> <span class="oi oi-delete"></span> </button> </td>
+                    &nbsp;&nbsp;&nbsp;
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button type="button" @onclick="OpenAddMoviePage">
+        <span class="oi oi-plus"></span>
+            Add Movie
+</button>
 @code {
-
+    IEnumerable<Movie> movies { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await _movieService.GetMovies();
+    }
+    private void returnToMainPage()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+    private void OpenAddMoviePage()
+    {
+        _navigationManager.NavigateTo("/AddMovie");
+    }
+    private void openUsers()
+    {
+        _navigationManager.NavigateTo("/users");
+    }
+    private void openReviewers()
+    {
+        _navigationManager.NavigateTo("/reviewers");
+    }
+    private async Task DeleteMovieAsync(int movieId)
+    {
+        await _movieService.DeleteMovieAsync(movieId);
+        movies = await _movieService.GetMovies();
+    }
 }

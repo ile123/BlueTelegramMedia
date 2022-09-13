@@ -1,0 +1,76 @@
+﻿@page "/AddMovie"
+
+@using Backend.Services;
+@using Domain.Entities;
+@using Backend.Authentication;
+
+@inject NavigationManager _navigationManager;
+@inject MovieService _movieService;
+@inject IJSRuntime js;
+
+<h3>Add Movie</h3>
+
+<EditForm Model="@movie" OnValidSubmit="AddMovieAsync">
+    <div class="movieFields">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="@movie.Name"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Writers</label>
+        <InputText id="description" class="form-control" @bind-Value="@movie.Writers"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="actor" class="form-label">Actor</label>
+        <InputText id="actor" class="form-control" @bind-Value="@movie.Actors"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="actors" class="form-label">Genre</label>
+        <InputText id="actors" class="form-control" @bind-Value="@movie.Genre"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputText id="description" class="form-control" @bind-Value="@movie.Description"></InputText>
+    </div>
+</div>
+
+<button type="submit" class="btn btn-primary">
+        <span class="oi-pencil"></span>
+            Add Movie
+</button>
+<button type="button" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+            Close
+</button>
+</EditForm>
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    public Movie movie { get; set; } = new Movie();
+    public Encryption encryption { get; set; } = new Encryption();
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+    private async Task AddMovieAsync()
+    {
+        var temp1 = _movieService.GetMovieByNameAsync(movie.Name);
+        if(temp1 is not null)
+        {
+            await _movieService.AddMovieAsync(movie);
+            Close();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert","Movie already exists!");
+            return;
+        }
+    }
+}

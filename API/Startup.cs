@@ -32,6 +32,9 @@ namespace API
 
             services.AddControllers();
             services.AddScoped<UserRepository>();
+            services.AddScoped<MovieRepository>();
+            services.AddScoped<ReviewerRepository>();
+            services.AddScoped<ReviewRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });

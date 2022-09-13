@@ -1,0 +1,77 @@
+﻿@page "/EditMovie/{MovieId}"
+
+@using Domain.Entities
+@using Backend.Services
+
+@inject MovieService _movieService;
+@inject NavigationManager _navigationManager;
+
+<h3>Edit Movie</h3>
+
+@if(movie == null)
+{
+    <div>Loading.......</div>
+}
+
+else
+{
+<EditForm Model="@movie" OnValidSubmit="@UpdateMovieAsync">
+<div class="movieFields">
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="@movie.Name"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Writers</label>
+        <InputText id="description" class="form-control" @bind-Value="@movie.Writers"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="actor" class="form-label">Actor</label>
+        <InputText id="actor" class="form-control" @bind-Value="@movie.Actors"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="actors" class="form-label">Genre</label>
+        <InputText id="actors" class="form-control" @bind-Value="@movie.Genre"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputText id="description" class="form-control" @bind-Value="@movie.Description"></InputText>
+    </div>
+</div>
+
+<button type="submit" class="btn btn-primary">
+        <span class="oi-pencil"></span>
+            Update Movie
+</button>
+<button type="button" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+            Close
+</button>
+
+</EditForm>
+}
+
+@code {
+    [Parameter]
+    public string MovieId { get; set; }
+
+    public Movie movie { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        movie = await _movieService.GetMovieAsync(int.Parse(MovieId));
+    }
+    private async Task UpdateMovieAsync()
+    {
+        await _movieService.UpdateMovieAsync(movie);
+        Close();
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+}

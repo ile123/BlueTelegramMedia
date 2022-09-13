@@ -1,0 +1,57 @@
+﻿@page "/EditReviewer/{ReviewerId}"
+
+@attribute [Authorize(Roles = "Admin, Employee")]
+
+@using Domain.Entities;
+@using Backend.Services;
+
+@inject ReviewerService _reviewerService;
+@inject NavigationManager _navigationManager;
+
+<h3>Edit Reviewer</h3>
+
+@if(reviewer == null)
+{
+    <div>Loading........</div>
+}
+else
+{
+<EditForm Model="@reviewer" OnValidSubmit="@UpdateReviewerAsync">
+<div class="reviewerFields">
+
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="@reviewer.Username"></InputText>
+    </div>
+
+</div>
+     <button type="submit">
+            <span class="bi bi-prescription"></span>
+                Update Reviewer
+     </button>
+     <button type="button" @onclick="Close">
+            <span class="oi oi-media-skip-backward"></span>
+                Close
+     </button>
+</EditForm>
+}
+@code {
+    [Parameter]
+    public string ReviewerId { get; set; }
+
+    public Reviewer reviewer { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        reviewer = await _reviewerService.GetReviewerAsync(int.Parse(ReviewerId));
+    }
+    private async Task UpdateReviewerAsync()
+    {
+        await _reviewerService.UpdateReviewerAsync(reviewer);
+        Close();
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/reviewers");
+    }
+}

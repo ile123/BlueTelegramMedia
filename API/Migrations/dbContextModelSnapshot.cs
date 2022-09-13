@@ -129,21 +129,17 @@ namespace API.Migrations
 
             modelBuilder.Entity("Domain.Entities.Review", b =>
                 {
-                    b.HasOne("Domain.Entities.Movie", "Movie")
+                    b.HasOne("Domain.Entities.Movie", null)
                         .WithMany("Reviews")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.Reviewer", "Reviewer")
+                    b.HasOne("Domain.Entities.Reviewer", null)
                         .WithMany("Reviews")
                         .HasForeignKey("ReviewerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("Domain.Entities.Movie", b =>

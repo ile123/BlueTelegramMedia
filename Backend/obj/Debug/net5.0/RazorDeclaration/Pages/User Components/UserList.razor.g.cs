@@ -90,6 +90,13 @@ using Radzen;
 #line hidden
 #nullable disable
 #nullable restore
+#line 12 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\_Imports.razor"
+using Radzen.Blazor;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
 #line 5 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\UserList.razor"
 using Domain.Entities;
 
@@ -99,13 +106,6 @@ using Domain.Entities;
 #nullable restore
 #line 6 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\UserList.razor"
 using Backend.Services;
-
-#line default
-#line hidden
-#nullable disable
-#nullable restore
-#line 7 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\UserList.razor"
-using Radzen.Blazor;
 
 #line default
 #line hidden
@@ -126,7 +126,7 @@ using Radzen.Blazor;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 85 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\UserList.razor"
+#line 104 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\UserList.razor"
        
     private IEnumerable<User> users { get; set; }
     private string selectedSort { get; set; }
@@ -164,6 +164,13 @@ using Radzen.Blazor;
     private void OpenAddUserPage()
     {
         _navigationManager.NavigateTo("/AddUser");
+    }
+    private void openMovies(){
+        _navigationManager.NavigateTo("/movies");
+    }
+    private void openReviewers()
+    {
+        _navigationManager.NavigateTo("/reviewers");
     }
     private async Task DeleteUserAsync(int userId)
     {

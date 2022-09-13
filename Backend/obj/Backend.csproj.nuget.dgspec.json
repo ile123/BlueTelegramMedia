@@ -158,7 +158,7 @@
             },
             "Radzen.Blazor": {
               "target": "Package",
-              "version": "[3.20.10, )"
+              "version": "[3.18.12, )"
             }
           },
           "imports": [

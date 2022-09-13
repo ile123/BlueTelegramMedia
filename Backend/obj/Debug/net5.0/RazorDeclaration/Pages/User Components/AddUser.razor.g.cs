@@ -135,13 +135,9 @@ using Backend.Authentication;
 #nullable restore
 #line 60 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\AddUser.razor"
        
-    public User user { get; set; }
-    private Encryption encryption { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        encryption = new Encryption();
-        user = new User();
-    }
+    //ImageFile fileBase64 = new ImageFile();
+    public User user { get; set; } = new User();
+    private Encryption encryption { get; set; } = new Encryption();
     private void Close()
     {
         _navigationManager.NavigateTo("/users");
@@ -149,15 +145,35 @@ using Backend.Authentication;
 
     private async Task AddUserAsync()
     {
-        string temp = encryption.EncodePasswordToBase64(user.Password);
-        user.Password = temp;
-        await _userService.AddUserAsync(user);
-        Close();
+        var temp1 = _userService.GetUserByUserNameAsync(user.Username);
+        if(temp1 is not null)
+        {
+            string temp2 = encryption.EncodePasswordToBase64(user.Password);
+            user.Password = temp2;
+            await _userService.AddUserAsync(user);
+            Close();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert","User already exists!");
+            return;
+        }
     }
+    /*
+    async Task OnChange(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        var resizedFile = await file.RequestImageFileAsync(file.ContentType, 640, 480);
+        var buf = new byte[resizedFile.Size];
+
+    }
+    */
+    //C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Domain\Images ovo je za slike kada se uvatis toga
 
 #line default
 #line hidden
 #nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime js { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager _navigationManager { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private UserService _userService { get; set; }
     }

@@ -52,7 +52,6 @@ namespace Backend.Authentication
                 await _sessionStorage.DeleteAsync("UserSession");
                 claimsPrincipal = _anonymous;
             }
-
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
         }
     }

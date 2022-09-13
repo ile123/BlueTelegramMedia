@@ -1,0 +1,172 @@
+﻿@page "/reviewers"
+
+@attribute [Authorize(Roles = "Admin")]
+
+@using Domain.Entities;
+@using Backend.Services;
+
+@inject ReviewerService _reviewerService;
+@inject NavigationManager _navigationManager;
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <img src="images/logo_for_nav_2.png" />
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" @onclick="openMainPage">Main Page</button>
+            &nbsp;&nbsp;&nbsp;
+        </li>
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-primary" @onclick="openUsers">Users</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" disabled>Reviewers</button>
+                </li>
+                 &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="Admin,Employee">
+            <Authorized>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success" @onclick="openMovies">Movies</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+@if(reviewers == null)
+{
+    <div>Loading.......</div>
+}
+else
+{
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Filter......" @bind="Filter" @bind:event="oninput">
+    </div>
+    <select @bind="SelectedSort">
+        <option value="Id">Default</option>
+        <option value="Username">Username</option>
+        <option value="Email">Email</option>
+    </select>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Change Password</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var reviewer in reviewers)
+            {
+                if (!IsVisible(reviewer))
+                {
+                    continue;
+                }
+                <tr>
+                    <td scope="row">@reviewer.Id</td>
+                    <td scope="row">@reviewer.Username</td>
+                    <td scope="row">@reviewer.Email</td>
+                    <td> <a href="/EditReviewer/@reviewer.Id" class="btn btn-primary"> <span class="oi oi-pencil"></span> </a></td>
+                    <td> <a href="/ChangePasswordReviewer/@reviewer.Id" class="btn btn-primary"> <span class="bi bi-minecart"></span> </a></td>
+                    <td><button type="button" @onclick="() => DeleteReviewerAsync(reviewer.Id)"> <span class="oi oi-delete"></span> </button> </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<button type="button" @onclick="openAddReviewer">
+        <span class="oi oi-plus"></span>
+            Add Reviewer
+</button>
+
+@code {
+    public IEnumerable<Reviewer> reviewers { get; set; }
+    private string selectedSort { get; set; }
+    public string Filter { get; set; }
+    public string SelectedSort
+    {
+        get{ return selectedSort; }
+        set
+        {
+            selectedSort = value;
+            selecteSortDictionary[selectedSort]();
+
+        }
+
+    }
+    Dictionary<string, Action> selecteSortDictionary;
+    protected override async Task OnInitializedAsync()
+    {
+        reviewers = await _reviewerService.GetReviewers();
+        Filter = string.Empty;
+        selecteSortDictionary = new Dictionary<string, Action>
+        {
+             ["Id"] = () => reviewers = reviewers.OrderBy(x => x.Id),
+             ["Username"] = () => reviewers = reviewers.OrderBy(x => x.Username),
+             ["Email"] = () => reviewers = reviewers.OrderBy(x => x.Email)
+        };
+    }
+    private void openMainPage(){
+        _navigationManager.NavigateTo("/");
+    }
+    private void openAddReviewer()
+    {
+        _navigationManager.NavigateTo("/addReviewer");
+    }
+    private void openUsers()
+    {
+        _navigationManager.NavigateTo("/users");
+    }
+    private void openMovies()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+    private async Task DeleteReviewerAsync(int reviewerId)
+    {
+        await _reviewerService.DeleteReviewerAsync(reviewerId);
+        reviewers = await _reviewerService.GetReviewers();
+    }
+    public bool IsVisible(Reviewer reviewer)
+    {
+        if (string.IsNullOrEmpty(reviewer.Username))
+        {
+            return true;
+        }
+        if (reviewer.Username.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (reviewer.Username.StartsWith(Filter))
+        {
+            return true;
+        }
+        if (string.IsNullOrEmpty(reviewer.Email))
+        {
+            return true;
+        }
+        if (reviewer.Email.Contains(Filter, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        if (reviewer.Email.StartsWith(Filter))
+        {
+            return true;
+        }
+        return false;
+    }
+}

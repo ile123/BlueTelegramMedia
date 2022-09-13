@@ -96,6 +96,28 @@ using Radzen.Blazor;
 #line default
 #line hidden
 #nullable disable
+#nullable restore
+#line 3 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\Movie Components\MovieList.razor"
+using Domain.Entities;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 4 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\Movie Components\MovieList.razor"
+using Backend.Services;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 9 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\Movie Components\MovieList.razor"
+           [Authorize(Roles = "Admin, Employee")]
+
+#line default
+#line hidden
+#nullable disable
+    [Microsoft.AspNetCore.Components.RouteAttribute("/movies")]
     public partial class MovieList : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
@@ -103,6 +125,41 @@ using Radzen.Blazor;
         {
         }
         #pragma warning restore 1998
+#nullable restore
+#line 88 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\Movie Components\MovieList.razor"
+       
+    IEnumerable<Movie> movies { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await _movieService.GetMovies();
+    }
+    private void returnToMainPage()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+    private void OpenAddMoviePage()
+    {
+        _navigationManager.NavigateTo("/AddMovie");
+    }
+    private void openUsers()
+    {
+        _navigationManager.NavigateTo("/users");
+    }
+    private void openReviewers()
+    {
+        _navigationManager.NavigateTo("/reviewers");
+    }
+    private async Task DeleteMovieAsync(int movieId)
+    {
+        await _movieService.DeleteMovieAsync(movieId);
+        movies = await _movieService.GetMovies();
+    }
+
+#line default
+#line hidden
+#nullable disable
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager _navigationManager { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private MovieService _movieService { get; set; }
     }
 }
 #pragma warning restore 1591

@@ -8,6 +8,7 @@
 
 @inject UserService _userService;
 @inject NavigationManager _navigationManager;
+@inject IJSRuntime js;
 
 <h3>Add User</h3>
 <EditForm Model="@user" OnValidSubmit="@AddUserAsync">
@@ -30,12 +31,12 @@
 
     <div class="mb-3">
         <label for="email" class="form-label">Email</label>
-        <InputText id="email" class="form-control" @bind-Value="@user.Email"></InputText>
+        <InputText id="email" type="email" class="form-control" @bind-Value="@user.Email"></InputText>
     </div>
 
     <div class="mb-3">
         <label for="password" class="form-label">Password</label>
-        <InputText id="passowrd" class="form-control" @bind-Value="@user.Password"></InputText>
+        <InputText id="passowrd" type="password" class="form-control" @bind-Value="@user.Password"></InputText>
     </div>
 
     <div class="mb-3">
@@ -46,7 +47,6 @@
             <option value="Employee">Employee</option>
         </InputSelect>
     </div>
-
 </div>
 <button type="submit" class="btn btn-primary">
         <span class="oi-pencil"></span>
@@ -58,13 +58,9 @@
     </button>
 </EditForm>
 @code {
-    public User user { get; set; }
-    private Encryption encryption { get; set; }
-    protected override async Task OnInitializedAsync()
-    {
-        encryption = new Encryption();
-        user = new User();
-    }
+    //ImageFile fileBase64 = new ImageFile();
+    public User user { get; set; } = new User();
+    private Encryption encryption { get; set; } = new Encryption();
     private void Close()
     {
         _navigationManager.NavigateTo("/users");
@@ -72,9 +68,28 @@
 
     private async Task AddUserAsync()
     {
-        string temp = encryption.EncodePasswordToBase64(user.Password);
-        user.Password = temp;
-        await _userService.AddUserAsync(user);
-        Close();
+        var temp1 = _userService.GetUserByUserNameAsync(user.Username);
+        if(temp1 is not null)
+        {
+            string temp2 = encryption.EncodePasswordToBase64(user.Password);
+            user.Password = temp2;
+            await _userService.AddUserAsync(user);
+            Close();
+        }
+        else
+        {
+            await js.InvokeVoidAsync("alert","User already exists!");
+            return;
+        }
     }
+    /*
+    async Task OnChange(InputFileChangeEventArgs e)
+    {
+        var files = e.GetMultipleFiles();
+        var resizedFile = await file.RequestImageFileAsync(file.ContentType, 640, 480);
+        var buf = new byte[resizedFile.Size];
+
+    }
+    */
+    //C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Domain\Images ovo je za slike kada se uvatis toga
 }

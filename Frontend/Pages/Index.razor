@@ -1,0 +1,88 @@
+﻿@page "/"
+
+@using Frontend.Authentication;
+@using Radzen.Blazor;
+@using Frontend.Services;
+
+@inject NavigationManager _navigationManager;
+@inject AuthenticationStateProvider authStateProvider;
+@inject ReviewerService _reviewerService;
+@inject IJSRuntime js;
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <img src="images/logo.png" />
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" disabled>Main Page</button>
+            &nbsp;&nbsp;&nbsp;
+        </li>
+        <AuthorizeView Roles="Reviewer">
+            <Authorized>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success" @onclick="openMovies">Movies</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" @onclick="openReviews">My Reviews</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView>
+            <Authorized>
+                <button @onclick="Logout" href="javascript:void(0)">Logout</button>
+            </Authorized>
+            <NotAuthorized>
+                <button @onclick="openLogin" class="btn btn-success">Login</button>
+                 &nbsp;&nbsp;&nbsp;
+                <button @onclick="openRegister" class="btn btn-danger">Register</button>
+            </NotAuthorized>
+        </AuthorizeView>
+      </ul>
+    </div>
+  </div>
+</nav>
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    private string userName { get; set; } = string.Empty;
+
+    private async Task DisplayGreetingAlert()
+    {
+        var authState = await authenticationState;
+        var message = $"Hello {authState.User.Identity.Name}";
+        await js.InvokeVoidAsync("alert", message);
+    }
+
+    private async Task Logout()
+    {
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+        _navigationManager.NavigateTo("/", true);
+    }
+
+    private void openMovies()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+
+    private void openLogin()
+    {
+        _navigationManager.NavigateTo("/login");
+    }
+
+    private void openRegister()
+    {
+        _navigationManager.NavigateTo("/register");
+    }
+    private void openReviews()
+    {
+        _navigationManager.NavigateTo("/reviews");
+    }
+}

@@ -1,0 +1,54 @@
+﻿@page "/register"
+
+@using Domain.Entities;
+@using Frontend.Authentication;
+@using Frontend.Services;
+
+@inject NavigationManager _navigationManager;
+@inject ReviewerService _reviewerService;
+
+<h3>Registration Form</h3>
+
+<EditForm Model="@reviewer" OnValidSubmit="@AddReviewerAsync">
+<div class="userReviewer">
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <InputText id="username" class="form-control" @bind-Value="@reviewer.Username"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <InputText id="email" class="form-control" type="email" @bind-Value="@reviewer.Email"></InputText>
+    </div>
+
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <InputText id="passowrd" type="password" class="form-control" @bind-Value="@reviewer.Password"></InputText>
+    </div>
+</div>
+    <button type="submit" class="btn btn-primary">
+        <span class="bi bi-prescription"></span>
+            Submit
+    </button>
+    <button type="button" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+            Close
+    </button>
+</EditForm>
+
+@code {
+    public Reviewer reviewer { get; set; } = new Reviewer();
+    private Encryption encryption { get; set; } = new Encryption();
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+
+    private async Task AddReviewerAsync()
+    {
+        string temp = encryption.EncodePasswordToBase64(reviewer.Password);
+        reviewer.Password = temp;
+        await _reviewerService.AddReviewerAsync(reviewer);
+        Close();
+    }
+}

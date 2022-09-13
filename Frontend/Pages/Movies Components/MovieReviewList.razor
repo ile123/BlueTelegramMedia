@@ -1,0 +1,102 @@
+﻿@page "/MovieReviewList/{MovieId}"
+
+@attribute [Authorize(Roles = "Reviewer")]
+
+@using Domain.Entities;
+@using Frontend.Services;
+
+@inject NavigationManager _navigationManager;
+@inject ReviewerService _reviewerService;
+@inject MovieService _movieService;
+@inject ReviewService _reviewService;
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <img src="images/logo_for_nav_2.png" />
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+            <button type="button" class="btn btn-secondary" @onclick="openMainPage">Main Page</button>
+            &nbsp;&nbsp;&nbsp;
+        </li>
+        <AuthorizeView Roles="Reviewer">
+            <Authorized>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success" @onclick="openReviews">Movies</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" @onclick="openReviews">My Reviews</button>
+                </li>
+                &nbsp;&nbsp;&nbsp;
+            </Authorized>
+        </AuthorizeView>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<h3>Movie Review List</h3>
+
+@if(movie == null && reviewers == null && reviews == null)
+{
+    <div>Loading.....</div>
+}
+else
+{
+    <div class="row">
+        @foreach(var review in reviews)
+        {
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        @reviewers.FirstOrDefault(x => x.Id.Equals(review.ReviewerId)).Username
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">@review.Rating / 10</p>
+                        <p class="card-text">@review.FilmReview</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+<button type="button" @onclick="Close">
+        <span class="oi oi-media-skip-backward"></span>
+            Return to Movies
+    </button>
+
+@code {
+    public List<Review> reviews { get; set; }
+    public List<Reviewer> reviewers { get; set; }
+    [Parameter]
+    public string MovieId { get; set; }
+
+    public Movie movie { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        movie = await _movieService.GetMovieAsync(int.Parse(MovieId));
+        reviews = await _reviewService.GetReviews();
+        reviews.RemoveAll(review => review.MovieId != int.Parse(MovieId));
+        reviewers = await _reviewerService.GetReviewers();
+    }
+    private void openMainPage()
+    {
+        _navigationManager.NavigateTo("/");
+    }
+    private void Close()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+    private void openMovies()
+    {
+        _navigationManager.NavigateTo("/movies");
+    }
+    private void openReviews()
+    {
+        _navigationManager.NavigateTo("/reviews");
+    }
+}

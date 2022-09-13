@@ -97,27 +97,41 @@ using Radzen.Blazor;
 #line hidden
 #nullable disable
 #nullable restore
-#line 3 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
+#line 5 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
 using Domain.Entities;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
+#line 6 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
+using Backend.Authentication;
+
+#line default
+#line hidden
+#nullable disable
+#nullable restore
+#line 7 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
 using Backend.Services;
 
 #line default
 #line hidden
 #nullable disable
 #nullable restore
-#line 5 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
-using Backend.Authentication;
+#line 3 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
+           [Authorize(Roles = "Admin")]
 
 #line default
 #line hidden
 #nullable disable
-    [Microsoft.AspNetCore.Components.RouteAttribute("/ChangePassword/{UserId}")]
+#nullable restore
+#line 13 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
+           [Authorize(Roles = "Admin")]
+
+#line default
+#line hidden
+#nullable disable
+    [Microsoft.AspNetCore.Components.RouteAttribute("/ChangePasswordUser/{UserId}")]
     public partial class ChangePassword : Microsoft.AspNetCore.Components.ComponentBase
     {
         #pragma warning disable 1998
@@ -126,32 +140,36 @@ using Backend.Authentication;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 42 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
+#line 45 "C:\Users\Ilario\source\repos\BlueTelegramMedia(.NET 5)\Backend\Pages\User Components\ChangePassword.razor"
        
     [Parameter]
     public string UserId { get; set; }
 
     public User user { get; set; }
-    private Encryption encryption { get; set; }
-
-    public string password { get; set; } = string.Empty;
-    public string repeatPassword { get; set; } = string.Empty;
-
+    private Encryption encryption { get; set; } = new Encryption();
+    public class Model
+    {
+        public string Password;
+        public string RepeatPassword;
+    };
+    private Model model = new Model();
     protected override async Task OnInitializedAsync()
     {
-        encryption = new Encryption();
         user = await _userService.GetUserAsync(int.Parse(UserId));
-        user.Username = string.Empty;
+        user.Email = string.Empty;
         user.Firstname = string.Empty;
         user.Lastname = string.Empty;
-        user.Email = string.Empty;
-        user.Password = string.Empty;
         user.Role = string.Empty;
+        user.Username = string.Empty;
     }
-
     private async Task UpdateUserAsync()
     {
-        string temp = encryption.EncodePasswordToBase64(password);
+        if (!model.Password.Equals(model.RepeatPassword))
+        {
+            await js.InvokeVoidAsync("alert","Both fields do not match!");
+            return;
+        }
+        string temp = encryption.EncodePasswordToBase64(model.Password);
         user.Password = temp;
         await _userService.UpdateUserAsync(user);
         Close();
@@ -164,8 +182,9 @@ using Backend.Authentication;
 #line default
 #line hidden
 #nullable disable
-        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager _navigationManager { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private IJSRuntime js { get; set; }
         [global::Microsoft.AspNetCore.Components.InjectAttribute] private UserService _userService { get; set; }
+        [global::Microsoft.AspNetCore.Components.InjectAttribute] private NavigationManager _navigationManager { get; set; }
     }
 }
 #pragma warning restore 1591
