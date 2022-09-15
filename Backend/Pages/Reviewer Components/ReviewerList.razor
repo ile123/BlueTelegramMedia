@@ -86,7 +86,7 @@ else
                 </tr>
             }
         </tbody>
-    </table>
+    </table> 
 }
 
 <button type="button" @onclick="openAddReviewer">
@@ -135,6 +135,10 @@ else
     private void openMovies()
     {
         _navigationManager.NavigateTo("/movies");
+    }
+    private void openReviewerEdit(int ReviewerId)
+    {
+        _navigationManager.NavigateTo("/EditReviewer/" + ReviewerId);
     }
     private async Task DeleteReviewerAsync(int reviewerId)
     {

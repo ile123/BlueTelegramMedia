@@ -169,6 +169,10 @@ using Backend.Services;
     {
         _navigationManager.NavigateTo("/movies");
     }
+    private void openReviewerEdit(int ReviewerId)
+    {
+        _navigationManager.NavigateTo("/EditReviewer/" + ReviewerId);
+    }
     private async Task DeleteReviewerAsync(int reviewerId)
     {
         await _reviewerService.DeleteReviewerAsync(reviewerId);

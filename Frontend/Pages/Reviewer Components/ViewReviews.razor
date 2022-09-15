@@ -65,7 +65,7 @@ else
             </div>
         }
     </div>
-    <button type="button" @onclick="Close">
+    <button type="button" @onclick="openMainPage">
         <span class="oi oi-media-skip-backward"></span>
             Return to Main Page
     </button>
@@ -83,10 +83,6 @@ else
         reviews = await _reviewService.GetReviews();
         reviews.RemoveAll(x => x.ReviewerId != reviewer.Id);
         movies = await _movieService.GetMovies();
-    }
-    private void Close()
-    {
-        _navigationManager.NavigateTo("/");
     }
     private void openMainPage()
     {

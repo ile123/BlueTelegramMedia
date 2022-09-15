@@ -140,10 +140,6 @@ using Domain.Entities;
         reviews.RemoveAll(x => x.ReviewerId != reviewer.Id);
         movies = await _movieService.GetMovies();
     }
-    private void Close()
-    {
-        _navigationManager.NavigateTo("/");
-    }
     private void openMainPage()
     {
         _navigationManager.NavigateTo("/");
